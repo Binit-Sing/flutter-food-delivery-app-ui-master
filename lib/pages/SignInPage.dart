@@ -31,13 +31,16 @@ class _SignInPageState extends State<SignInPage> {
         width: double.infinity,
         height: double.infinity,
         color: Colors.white70,
-        child: Column(
+        child: ListView(
           children: <Widget>[
             Flexible(
               flex: 8,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
+                  SizedBox(
+                    height: 45,
+                  ),
                   Container(
                     width: 230,
                     height: 100,
@@ -62,7 +65,7 @@ class _SignInPageState extends State<SignInPage> {
                       ),
                       filled: true,
                       prefixIcon: Icon(
-                        Icons.phone,
+                        Icons.email,
                         color: Color(0xFF666666),
                         size: defaultIconSize,
                       ),
@@ -78,6 +81,7 @@ class _SignInPageState extends State<SignInPage> {
                     height: 15,
                   ),
                   TextField(
+                    obscureText: true,
                     showCursor: true,
                     controller: passwordController,
                     decoration: InputDecoration(
@@ -131,6 +135,9 @@ class _SignInPageState extends State<SignInPage> {
                 ],
               ),
             ),
+            SizedBox(
+              height: 25,
+            ),
             Flexible(
               flex: 1,
               child: Align(
@@ -178,6 +185,24 @@ class _SignInPageState extends State<SignInPage> {
 }
 
 class SignInButtonWidget extends StatelessWidget {
+  showAlertDialog(BuildContext context) {
+    AlertDialog alert = AlertDialog(
+      content: new Row(
+        children: [
+          CircularProgressIndicator(),
+          Container(margin: EdgeInsets.only(left: 5), child: Text("Loading")),
+        ],
+      ),
+    );
+    showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -215,19 +240,26 @@ class SignInButtonWidget extends StatelessWidget {
             ),
           ),
           onPressed: () async {
-            LoginApi newPost = new LoginApi(
-                email: emailController.text,
-                password: passwordController.text,
-                role: "4");
-
-            LoginResponse response = await createLoginApi(
-                Api.BASEURL + Api.login, context,
-                body: newPost.toMap());
-            if (response.statusCode == 200) {
-              Navigator.push(context, ScaleRoute(page: HomePage()));
-            } else {
-              Toast.show("Incorrect username and password", context,
+            if (emailController.text.isEmpty ||
+                passwordController.text.isEmpty) {
+              Toast.show("Please enter email and password.", context,
                   duration: Toast.LENGTH_SHORT, gravity: Toast.BOTTOM);
+            } else {
+              LoginApi newPost = new LoginApi(
+                  email: emailController.text,
+                  password: passwordController.text,
+                  role: "4");
+              showAlertDialog(context);
+              LoginResponse response = await createLoginApi(
+                  Api.BASEURL + Api.login, context,
+                  body: newPost.toMap());
+              Navigator.pop(context);
+              if (response.statusCode == 200) {
+                Navigator.push(context, ScaleRoute(page: HomePage()));
+              } else {
+                Toast.show("Incorrect username and password", context,
+                    duration: Toast.LENGTH_SHORT, gravity: Toast.BOTTOM);
+              }
             }
           }),
     );

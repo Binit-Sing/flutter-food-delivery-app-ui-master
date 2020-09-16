@@ -6,24 +6,60 @@ class TopMenus extends StatefulWidget {
 }
 
 class _TopMenusState extends State<TopMenus> {
+  Future<CategoryListResponse> _response;
+
+  void initState() {
+    super.initState();
+    getData();
+  }
+
+  void getData() {
+    setState(() {
+      CategoryListApi newApi = new CategoryListApi(page: '1', perPage: '10');
+      _response = createCategoryListApi(newApi.toGETUrl(), context);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 100,
-      child: ListView(
-        scrollDirection: Axis.horizontal,
-        children: <Widget>[
-          TopMenuTiles(name: "Burger", imageUrl: "ic_burger", slug: ""),
-          TopMenuTiles(name: "Sushi", imageUrl: "ic_sushi", slug: ""),
-          TopMenuTiles(name: "Pizza", imageUrl: "ic_pizza", slug: ""),
-          TopMenuTiles(name: "Cake", imageUrl: "ic_cake", slug: ""),
-          TopMenuTiles(name: "Ice Cream", imageUrl: "ic_ice_cream", slug: ""),
-          TopMenuTiles(name: "Soft Drink", imageUrl: "ic_soft_drink", slug: ""),
-          TopMenuTiles(name: "Burger", imageUrl: "ic_burger", slug: ""),
-          TopMenuTiles(name: "Sushi", imageUrl: "ic_sushi", slug: ""),
-        ],
-      ),
+    return FutureBuilder<CategoryListResponse>(
+      future: _response,
+      builder: (context, projectSnap) {
+        if (projectSnap.hasData) {
+          return ListView.builder(
+            itemCount: projectSnap.data.data.listX.length,
+            itemBuilder: (context, index) {
+              CategoryListData project = projectSnap.data.data.listX[index];
+              return Column(
+                children: <Widget>[
+                  // Widget to display the list of project
+                  TopMenuTiles(
+                      name: project.title, imageUrl: project.icon, slug: "")
+                ],
+              );
+            },
+          );
+        }
+        return CircularProgressIndicator();
+      },
     );
+
+//    return Container(
+//      height: 100,
+//      child: ListView(
+//        scrollDirection: Axis.horizontal,
+//        children: <Widget>[
+//          TopMenuTiles(name: "Burger", imageUrl: "ic_burger", slug: ""),
+//          TopMenuTiles(name: "Sushi", imageUrl: "ic_sushi", slug: ""),
+//          TopMenuTiles(name: "Pizza", imageUrl: "ic_pizza", slug: ""),
+//          TopMenuTiles(name: "Cake", imageUrl: "ic_cake", slug: ""),
+//          TopMenuTiles(name: "Ice Cream", imageUrl: "ic_ice_cream", slug: ""),
+//          TopMenuTiles(name: "Soft Drink", imageUrl: "ic_soft_drink", slug: ""),
+//          TopMenuTiles(name: "Burger", imageUrl: "ic_burger", slug: ""),
+//          TopMenuTiles(name: "Sushi", imageUrl: "ic_sushi", slug: ""),
+//        ],
+//      ),
+//    );
   }
 }
 
@@ -66,8 +102,8 @@ class TopMenuTiles extends StatelessWidget {
                   width: 50,
                   height: 50,
                   child: Center(
-                      child: Image.asset(
-                    'assets/images/topmenu/' + imageUrl + ".png",
+                      child: Image.network(
+                    imageUrl,
                     width: 24,
                     height: 24,
                   )),

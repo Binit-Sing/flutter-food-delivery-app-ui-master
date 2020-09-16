@@ -14,11 +14,11 @@ class LoginApi {
 
   LoginApi({this.email, this.password, this.role});
 
-  factory LoginApi.fromJson(Map jso) {
+  factory LoginApi.fromJson(Map json) {
     return LoginApi(
-      email: jso['email'],
-      password: jso['password'],
-      role: jso['role']
+      email: json['email'],
+      password: json['password'],
+      role: json['role']
     );
   }
 
