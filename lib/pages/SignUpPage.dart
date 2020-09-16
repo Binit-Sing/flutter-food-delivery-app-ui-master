@@ -16,8 +16,6 @@ class SignUpPage extends StatefulWidget {
   _MyHomePageState createState() => _MyHomePageState();
 }
 
-
-//comment made 
 TextEditingController firstNameController = new TextEditingController();
 TextEditingController lastNameController = new TextEditingController();
 TextEditingController emailController = new TextEditingController();

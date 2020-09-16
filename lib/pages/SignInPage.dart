@@ -8,6 +8,7 @@ import 'package:flutter_app/pages/SignUpPage.dart';
 import 'package:flutter_app/response/LoginResponse.dart';
 import 'package:flutter_app/webservices/Api.dart';
 import 'package:flutter_app/webservices/LoginApi.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:toast/toast.dart';
 
 class SignInPage extends StatefulWidget {
@@ -17,6 +18,7 @@ class SignInPage extends StatefulWidget {
 
 TextEditingController emailController = new TextEditingController();
 TextEditingController passwordController = new TextEditingController();
+Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
 
 class _SignInPageState extends State<SignInPage> {
   @override
@@ -255,6 +257,8 @@ class SignInButtonWidget extends StatelessWidget {
                   body: newPost.toMap());
               Navigator.pop(context);
               if (response.statusCode == 200) {
+                final SharedPreferences prefs = await _prefs;
+                prefs.setString("name", response.data.firstname);
                 Navigator.push(context, ScaleRoute(page: HomePage()));
               } else {
                 Toast.show("Incorrect username and password", context,

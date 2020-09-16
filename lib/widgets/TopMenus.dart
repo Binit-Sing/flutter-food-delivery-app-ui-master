@@ -22,44 +22,34 @@ class _TopMenusState extends State<TopMenus> {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<CategoryListResponse>(
-      future: _response,
-      builder: (context, projectSnap) {
-        if (projectSnap.hasData) {
-          return ListView.builder(
-            itemCount: projectSnap.data.data.listX.length,
-            itemBuilder: (context, index) {
-              CategoryListData project = projectSnap.data.data.listX[index];
-              return Column(
-                children: <Widget>[
-                  // Widget to display the list of project
-                  TopMenuTiles(
-                      name: project.title, imageUrl: project.icon, slug: "")
-                ],
+    return Container(
+        height: 150,
+        width: double.infinity,
+        child: FutureBuilder<CategoryListResponse>(
+          future: _response,
+          builder: (context, projectSnap) {
+            if (projectSnap.hasData) {
+              return ListView.builder(
+                shrinkWrap: false,
+                scrollDirection: Axis.horizontal,
+                itemCount: projectSnap.data.data.data.length,
+                itemBuilder: (context, index) {
+                  DataRes project = projectSnap.data.data.data.elementAt(index);
+                  return Column(
+                    children: <Widget>[
+                      // Widget to display the list of project
+                      TopMenuTiles(
+                          name: project.title,
+                          imageUrl: project.icon,
+                          slug: project.description)
+                    ],
+                  );
+                },
               );
-            },
-          );
-        }
-        return CircularProgressIndicator();
-      },
-    );
-
-//    return Container(
-//      height: 100,
-//      child: ListView(
-//        scrollDirection: Axis.horizontal,
-//        children: <Widget>[
-//          TopMenuTiles(name: "Burger", imageUrl: "ic_burger", slug: ""),
-//          TopMenuTiles(name: "Sushi", imageUrl: "ic_sushi", slug: ""),
-//          TopMenuTiles(name: "Pizza", imageUrl: "ic_pizza", slug: ""),
-//          TopMenuTiles(name: "Cake", imageUrl: "ic_cake", slug: ""),
-//          TopMenuTiles(name: "Ice Cream", imageUrl: "ic_ice_cream", slug: ""),
-//          TopMenuTiles(name: "Soft Drink", imageUrl: "ic_soft_drink", slug: ""),
-//          TopMenuTiles(name: "Burger", imageUrl: "ic_burger", slug: ""),
-//          TopMenuTiles(name: "Sushi", imageUrl: "ic_sushi", slug: ""),
-//        ],
-//      ),
-//    );
+            }
+            return CircularProgressIndicator();
+          },
+        ));
   }
 }
 
@@ -99,13 +89,13 @@ class TopMenuTiles extends StatelessWidget {
                   ),
                 ),
                 child: Container(
-                  width: 50,
-                  height: 50,
+                  width: 100,
+                  height: 100,
                   child: Center(
                       child: Image.network(
                     imageUrl,
-                    width: 24,
-                    height: 24,
+                    width: double.infinity,
+                    height: double.infinity,
                   )),
                 )),
           ),

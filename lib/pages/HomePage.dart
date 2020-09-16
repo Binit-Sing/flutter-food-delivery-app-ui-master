@@ -6,12 +6,29 @@ import 'package:flutter_app/widgets/BottomNavBarWidget.dart';
 import 'package:flutter_app/widgets/PopularFoodsWidget.dart';
 import 'package:flutter_app/widgets/SearchWidget.dart';
 import 'package:flutter_app/widgets/TopMenus.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HomePage extends StatefulWidget {
   @override
   _HomePageState createState() => _HomePageState();
 }
+
 class _HomePageState extends State<HomePage> {
+  String name;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadCounter();
+  }
+
+  _loadCounter() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      name = (prefs.getString('name') ?? '');
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -19,7 +36,7 @@ class _HomePageState extends State<HomePage> {
         backgroundColor: Color(0xFFFAFAFA),
         elevation: 0,
         title: Text(
-          "What would you like to eat?",
+          "Hello " + name+ ",What would you like to eat?",
           style: TextStyle(
               color: Color(0xFF3a3737),
               fontSize: 16,
@@ -32,7 +49,9 @@ class _HomePageState extends State<HomePage> {
                 Icons.notifications_none,
                 color: Color(0xFF3a3737),
               ),
-              onPressed: () {Navigator.push(context, ScaleRoute(page: SignInPage()));})
+              onPressed: () {
+                Navigator.push(context, ScaleRoute(page: SignInPage()));
+              })
         ],
       ),
       body: SingleChildScrollView(
