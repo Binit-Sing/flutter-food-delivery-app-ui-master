@@ -45,7 +45,7 @@ class _MyHomePageState extends State<SignUpPage> {
         width: double.infinity,
         height: double.infinity,
         color: Colors.white70,
-        child: Column(
+        child: ListView(
           children: <Widget>[
             Flexible(
               flex: 1,
